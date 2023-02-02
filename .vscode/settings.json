@@ -11,10 +11,10 @@
   "editor.formatOnSave": true,
   "editor.fontLigatures": false,
   "editor.renderLineHighlight": "gutter",
-  "editor.rulers": [
-    79,
-    120,
-  ],
+  // "editor.rulers": [
+  //   79,
+  //   120,
+  // ],
   "editor.minimap.enabled": false,
   "editor.fontSize": 16,
   "debug.console.fontSize": 16,

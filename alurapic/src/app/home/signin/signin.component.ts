@@ -1,3 +1,4 @@
+import { PlatformDetectorService } from "./../../core/platform-detector/platform-detector.service";
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 import { Validators } from "@angular/forms";
 import { FormBuilder } from "@angular/forms";
@@ -18,7 +19,8 @@ export class SigninComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private platformDetectorService: PlatformDetectorService
   ) {}
 
   ngOnInit(): void {
@@ -36,7 +38,8 @@ export class SigninComponent implements OnInit {
       (err) => {
         console.log(err);
         this.loginForm.reset();
-        this.userNameInput.nativeElement.focus();
+        this.platformDetectorService.isPlatformBrowser() &&
+          this.userNameInput.nativeElement.focus();
         alert("Usuário e/ou senha incorretos");
       }
     );
