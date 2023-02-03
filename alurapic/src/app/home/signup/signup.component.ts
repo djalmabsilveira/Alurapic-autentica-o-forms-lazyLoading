@@ -1,5 +1,12 @@
+import { PlatformDetectorService } from "./../../core/platform-detector/platform-detector.service";
+import { SignupService } from "./signup.service";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Component, OnInit } from "@angular/core";
+import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
+
+import { lowerCaseValidator } from "src/app/shared/validators/lower-case.validator";
+import { UserNotTakenValidatorService } from "./user-not-taken.validator.service";
+import { NewUser } from "./new-user";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-signup",
@@ -7,39 +14,56 @@ import { Component, OnInit } from "@angular/core";
   styleUrls: ["./signup.component.css"],
 })
 export class SignupComponent implements OnInit {
-  singUpForm: FormGroup;
+  signupForm: FormGroup;
+  @ViewChild("emailInput") emailInput: ElementRef<HTMLInputElement>;
 
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private userNotTakenValidatorService: UserNotTakenValidatorService,
+    private signupService: SignupService,
+    private router: Router,
+    private platformDetectorService: PlatformDetectorService
+  ) {}
 
-  ngOnInit() {
-    this.singUpForm = this.formBuilder.group({
+  ngOnInit(): void {
+    this.signupForm = this.formBuilder.group({
       email: ["", [Validators.required, Validators.email]],
       fullName: [
         "",
         [
           Validators.required,
-          Validators.minLength(2),
+          Validators.minLength(5),
           Validators.maxLength(40),
         ],
       ],
       userName: [
         "",
-        ,
         [
           Validators.required,
-          Validators.pattern(/^[a-z0-9_\-]+$/),
+          lowerCaseValidator,
           Validators.minLength(2),
           Validators.maxLength(30),
         ],
+        [this.userNotTakenValidatorService.checkUserNameTaken()],
       ],
       password: [
         "",
         [
           Validators.required,
           Validators.minLength(8),
-          Validators.maxLength(14),
+          Validators.maxLength(18),
         ],
       ],
     });
+    this.platformDetectorService.isPlatformBrowser() &&
+      this.emailInput.nativeElement.focus();
+  }
+
+  signup() {
+    const newUser = this.signupForm.getRawValue() as NewUser;
+    this.signupService.signup(newUser).subscribe(
+      () => this.router.navigate([""]),
+      (err) => console.log(err)
+    );
   }
 }

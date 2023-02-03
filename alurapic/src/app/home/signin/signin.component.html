@@ -5,7 +5,7 @@
     <input
       #userNameInput
       class="form-control"
-      placeholder="user name"
+      placeholder="username"
       autofocus
       formControlName="userName"
     />
@@ -22,7 +22,7 @@
     <input
       type="password"
       class="form-control"
-      placeholder="password"
+      placeholder="***********"
       formControlName="password"
     />
     <app-vmessage
@@ -43,4 +43,4 @@
   </button>
 </form>
 
-<p>Not a user?<a>Register now</a></p>
+<p>Not a user? <a [routerLink]="['signup']">Register now</a></p>
