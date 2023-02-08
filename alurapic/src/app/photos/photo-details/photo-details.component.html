@@ -7,9 +7,28 @@
     <div class="col-lg-4 p-4">
       <small>
         <p class="text-left break-word">{{ photo.description }}</p>
-        <hr />
+        <div class="text-left mb-4">
+          <i class="fa fa-comment-o fa-2x mr-2 ml-2"></i>{{ photo.comments }}
+          <a>
+            <i
+              class="fa fa-trash-o fa-2x pull-right"
+              appPhotoOwnerOnly
+              [ownedPhoto]="photo"
+              (click)="remove()"
+            ></i>
+          </a>
+        </div>
+        <br />
       </small>
-      <app-photo-comments [photoId]="photoId"></app-photo-comments>
+      <app-photo-comments
+        *ngIf="photo.allowComments; else notAllowedComments"
+        [photoId]="photoId"
+      ></app-photo-comments>
+      <ng-template #notAllowedComments>
+        <p>
+          <em>O usuário desabilitou os comentários para esta foto.</em>
+        </p>
+      </ng-template>
     </div>
   </div>
 </div>
