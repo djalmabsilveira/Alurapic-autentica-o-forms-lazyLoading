@@ -15,10 +15,12 @@ const routes: Routes = [
       {
         path: "",
         component: SigninComponent,
+        data: { title: "Login" },
       },
       {
         path: "signup",
         component: SignupComponent,
+        data: { title: "Cadastre-se" },
       },
     ],
   },

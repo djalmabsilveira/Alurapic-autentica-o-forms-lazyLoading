@@ -1,10 +1,13 @@
-import { PhotoComment } from "./photo-comment";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { catchError, map } from "rxjs/operators";
+import { of, throwError } from "rxjs";
 
+import { PhotoComment } from "./photo-comment";
 import { Photo } from "./photo";
+import { environment } from "src/environments/environment";
 
-const API = "http://localhost:3000";
+const API = environment.ApiUrl;
 
 @Injectable({ providedIn: "root" })
 export class PhotoService {
@@ -26,7 +29,10 @@ export class PhotoService {
     formData.append("allowComments", allowComments ? "true" : "false");
     formData.append("imageFile", file);
 
-    return this.http.post(`${API}/photos/upload`, formData);
+    return this.http.post(`${API}/photos/upload`, formData, {
+      observe: "events",
+      reportProgress: true,
+    });
   }
 
   findById(photoId: number) {
@@ -37,11 +43,22 @@ export class PhotoService {
     return this.http.get<PhotoComment[]>(`${API}/photos/${photoId}/comments`);
   }
 
+  removePhoto(photoId: number) {
+    return this.http.delete(`${API}/photos/${photoId}`);
+  }
+
   addComments(photoId: number, commentText: string) {
     return this.http.post(`${API}/photos/${photoId}/comments`, { commentText });
   }
 
-  removePhoto(photoId: number) {
-    return this.http.delete(`${API}/photos/${photoId}`);
+  like(photoId: number) {
+    return this.http
+      .post(`${API}/photos/${photoId}/like`, {}, { observe: "response" })
+      .pipe(map((res) => true))
+      .pipe(
+        catchError((err) => {
+          return err.status == "304" ? of(false) : throwError(err);
+        })
+      );
   }
 }
