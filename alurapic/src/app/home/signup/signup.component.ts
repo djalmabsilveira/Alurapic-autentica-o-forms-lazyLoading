@@ -1,5 +1,4 @@
-import { PlatformDetectorService } from "./../../core/platform-detector/platform-detector.service";
-import { SignupService } from "./signup.service";
+import { UserNamePasswordValidator } from "./../../shared/validators/userName-password.validator";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
 
@@ -7,6 +6,8 @@ import { lowerCaseValidator } from "src/app/shared/validators/lower-case.validat
 import { UserNotTakenValidatorService } from "./user-not-taken.validator.service";
 import { NewUser } from "./new-user";
 import { Router } from "@angular/router";
+import { PlatformDetectorService } from "./../../core/platform-detector/platform-detector.service";
+import { SignupService } from "./signup.service";
 
 @Component({
   selector: "app-signup",
@@ -27,35 +28,38 @@ export class SignupComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.signupForm = this.formBuilder.group({
-      email: ["", [Validators.required, Validators.email]],
-      fullName: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(5),
-          Validators.maxLength(40),
+    this.signupForm = this.formBuilder.group(
+      {
+        email: ["", [Validators.required, Validators.email]],
+        fullName: [
+          "",
+          [
+            Validators.required,
+            Validators.minLength(5),
+            Validators.maxLength(40),
+          ],
         ],
-      ],
-      userName: [
-        "",
-        [
-          Validators.required,
-          lowerCaseValidator,
-          Validators.minLength(2),
-          Validators.maxLength(30),
+        userName: [
+          "",
+          [
+            Validators.required,
+            lowerCaseValidator,
+            Validators.minLength(2),
+            Validators.maxLength(30),
+          ],
+          [this.userNotTakenValidatorService.checkUserNameTaken()],
         ],
-        [this.userNotTakenValidatorService.checkUserNameTaken()],
-      ],
-      password: [
-        "",
-        [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.maxLength(18),
+        password: [
+          "",
+          [
+            Validators.required,
+            Validators.minLength(8),
+            Validators.maxLength(18),
+          ],
         ],
-      ],
-    });
+      },
+      { validator: UserNamePasswordValidator }
+    );
     this.platformDetectorService.isPlatformBrowser() &&
       this.emailInput.nativeElement.focus();
   }

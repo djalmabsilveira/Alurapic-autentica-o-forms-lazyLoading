@@ -1,3 +1,4 @@
+import { GlobalErrorComponent } from "./errors/global-error/global-error.component";
 import { PhotoDetailsComponent } from "./photos/photo-details/photo-details.component";
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
@@ -35,6 +36,11 @@ const routes: Routes = [
     path: "p/:photoId",
     component: PhotoDetailsComponent,
     data: { title: "Detalhes da Foto" },
+  },
+  {
+    path: "error",
+    component: GlobalErrorComponent,
+    data: { title: "Erro!" },
   },
   {
     path: "not-found",
